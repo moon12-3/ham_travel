@@ -22,7 +22,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     Thread th;  // 스레드 생성
 
     Toolkit tk = Toolkit.getDefaultToolkit();   // 이미지 불러오는 툴킷
-    Image player = tk.getImage("../img/player.png");
+    Image player = tk.getImage("src/img/player.png");
 
     Frame_make() {
         super("햄모험");
