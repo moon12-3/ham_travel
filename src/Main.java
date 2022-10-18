@@ -22,6 +22,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     int fire_speed;
 
     int x, y; // 캐릭터의 좌표 변수
+    int bx = 0; // 배경 스크롤 변수
+    int bx2 = 1200;
     boolean KeyUp = false; //키보드 입력 처리를 위한 변수
     boolean KeyDown = false;
     boolean KeyLeft = false;
@@ -37,6 +39,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     Image player;
     Image bullet;
     Image enemy;
+    Image backGround1;
     ArrayList bulletList = new ArrayList();
     ArrayList enemyList = new ArrayList();
     Image buffImage;    // 더블 버퍼링용
@@ -66,6 +69,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         height = 800;
 
         fire_speed = 15; //총알 속도
+        backGround1 = tk.getImage("src/img/background1.png");
         player  = tk.getImage("src/img/player.png");
         bullet = tk.getImage("src/img/bullet1.png");
         enemy = tk.getImage("src/img/enemy1.png");
@@ -82,6 +86,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     @Override
     public void run() {
         try{ // 예외옵션 설정으로 에러 방지
+
             while(true){ // while 문으로 무한 루프 시키기
                 KeyProcess(); // 키보드 입력처리를 하여 x,y 갱신
                 repaint(); // 갱신된 x,y값으로 이미지 새로 그리기
@@ -89,6 +94,23 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 cnt++;
                 EnemyProcess();
                 BulletProcess();
+
+                bx--;
+                bx2--;
+
+                if(bx < -(backGround1.getWidth(null))) {
+                    bx = backGround1.getWidth(null);
+                }
+                if(bx2 < -(backGround1.getWidth(null))) {
+                    bx2 = backGround1.getWidth(null);
+                }
+                repaint();
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -132,6 +154,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
     public void update(Graphics g) {
+        Draw_Background(); //그려진 배경 가져오기
+
         Draw_Char(); // 실제로 그려진 그림 가져오기
 
         Draw_Missile(); // 그려진 총알 가져오기
@@ -163,6 +187,15 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             }
 //
         }
+    }
+
+    public void Draw_Background(){ //배경 이미지 그리는 부분
+
+        buffg.clearRect(0, 0, width, height); //화면 지우기 명령은 이제 여기서 실행합니다.
+
+        buffg.drawImage(backGround1, bx, 0, this);
+        buffg.drawImage(backGround1, bx2, 0, this);
+
     }
 
     public void Draw_Char() {    // 실제로 그림들을 그릴 부분
