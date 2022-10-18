@@ -1,4 +1,5 @@
-import org.jetbrains.annotations.NotNull;
+
+import com.sun.istack.internal.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +15,8 @@ public class Main {
 class Frame_make extends JFrame implements KeyListener, Runnable{
     int width;
     int height;
+    int cnt;
+    int fire_speed;
 
     int x, y; // 캐릭터의 좌표 변수
     boolean KeyUp = false; //키보드 입력 처리를 위한 변수
@@ -53,6 +56,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         width = 1200;
         height = 800;
 
+        fire_speed = 15; //총알 속도
         player  = tk.getImage("src/img/player.png");
         bullet = tk.getImage("src/img/bullet1.png");
     }
@@ -72,6 +76,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 KeyProcess(); // 키보드 입력처리를 하여 x,y 갱신
                 repaint(); // 갱신된 x,y값으로 이미지 새로 그리기
                 Thread.sleep(20); // 20 milli sec 로 스레드 돌리기
+                cnt++;
                 BulletProcess();
             }
         }catch (Exception e){
@@ -81,8 +86,10 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     public void BulletProcess() {
         if(KeySpace)    {
-            bu = new Bullet(x, y);
-            bulletList.add(bu);
+            if(cnt%fire_speed==0) {
+                bu = new Bullet(x, y);
+                bulletList.add(bu);
+            }
         }
     }
 
@@ -107,6 +114,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void Draw_Missile() {
 
         for (int i = 0; i < bulletList.size(); i++) {
+
             bu = (Bullet) (bulletList.get(i));
 
             buffg.drawImage(bullet, bu.pos.x + 60, bu.pos.y + 30, this);
