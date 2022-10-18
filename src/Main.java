@@ -5,6 +5,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.io.*;
+import javax.imageio.*;
+//import java.awt.image.*;
 
 public class Main {
     public static void main(String args[]) {
@@ -24,17 +27,23 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     boolean KeyLeft = false;
     boolean KeyRight = false;
     boolean KeySpace = false;
+
+    int e_w, e_h; //적 이미지 크기값
+    int m_w, m_h; //미사일 이미지의 크기값을 받을 변수
+
     Thread th;  // 스레드 생성
 
     Toolkit tk = Toolkit.getDefaultToolkit();   // 이미지 불러오는 툴킷
     Image player;
     Image bullet;
+    Image enemy;
     ArrayList bulletList = new ArrayList();
+    ArrayList enemyList = new ArrayList();
     Image buffImage;    // 더블 버퍼링용
     Graphics buffg;     // 더블 버퍼링용 2
 
     Bullet bu;
-
+    Enemy en;
 
     Frame_make() {
         super("햄모험");
@@ -59,6 +68,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         fire_speed = 15; //총알 속도
         player  = tk.getImage("src/img/player.png");
         bullet = tk.getImage("src/img/bullet1.png");
+        enemy = tk.getImage("src/img/enemy1.png");
     }
 
     public void start() { // 시작처리명령
@@ -77,6 +87,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 repaint(); // 갱신된 x,y값으로 이미지 새로 그리기
                 Thread.sleep(20); // 20 milli sec 로 스레드 돌리기
                 cnt++;
+                EnemyProcess();
                 BulletProcess();
             }
         }catch (Exception e){
@@ -84,13 +95,30 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         }
     }
 
+    public void EnemyProcess() {
+        for(int i = 0; i < enemyList.size(); i++) {
+            en = (Enemy)(enemyList.get(i));
+            en.move();
+            if(en.x < -50) enemyList.remove(i);
+        }
+
+        if(cnt % 200 == 0) {
+            for(int i = 0; i < 5; i++) {
+                    en = new Enemy(width +25, (int)(Math.random() * (height-150))+50);
+                    enemyList.add(en);
+            }
+        }
+    }
+
     public void BulletProcess() {
-        if(KeySpace)    {
+        if(KeySpace) {
             if(cnt%fire_speed==0) {
                 bu = new Bullet(x, y);
                 bulletList.add(bu);
             }
         }
+        if(!KeySpace) cnt = 14;
+
     }
 
     @Override
@@ -108,7 +136,16 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
         Draw_Missile(); // 그려진 총알 가져오기
 
+        Draw_Enemy();
+
         g.drawImage(buffImage, 0, 0, this); // 화면에 버퍼에 그린 그림을 가져와 그리기
+    }
+
+    public void Draw_Enemy() {
+        for(int i = 0; i < enemyList.size(); ++i) {
+            en = (Enemy)(enemyList.get(i));
+            buffg.drawImage(enemy, en.x, en.y, this);
+        }
     }
 
     public void Draw_Missile() {
@@ -117,7 +154,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
             bu = (Bullet) (bulletList.get(i));
 
-            buffg.drawImage(bullet, bu.pos.x + 60, bu.pos.y + 30, this);
+            buffg.drawImage(bullet, bu.pos.x + 23, bu.pos.y + 8, this);
 
             bu.move();
 

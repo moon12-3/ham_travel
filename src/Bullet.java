@@ -7,6 +7,6 @@ public class Bullet {   // 총알 위치 파악 및 이동 위한 클래스
     }
 
     public void move() {
-        pos.x += 10;
+        pos.x += 20;
     }
 }
