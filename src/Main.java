@@ -3,31 +3,40 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String args[]) {
-        Frame_make fms = new Frame_make();
+        new Frame_make();
     }
 }
 
 class Frame_make extends JFrame implements KeyListener, Runnable{
-    int width = 1200;
-    int height = 800;
+    int width;
+    int height;
 
     int x, y; // 캐릭터의 좌표 변수
     boolean KeyUp = false; //키보드 입력 처리를 위한 변수
     boolean KeyDown = false;
     boolean KeyLeft = false;
     boolean KeyRight = false;
+    boolean KeySpace = false;
     Thread th;  // 스레드 생성
 
     Toolkit tk = Toolkit.getDefaultToolkit();   // 이미지 불러오는 툴킷
-    Image player = tk.getImage("src/img/player.png");
+    Image player;
+    Image bullet;
+    ArrayList bulletList = new ArrayList();
+    Image buffImage;    // 더블 버퍼링용
+    Graphics buffg;     // 더블 버퍼링용 2
+
+    Bullet bu;
+
 
     Frame_make() {
         super("햄모험");
-        setSize(width, height);
         init();
+        setSize(width, height);
         start();
         Dimension screen = tk.getScreenSize();
 //        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize(); // 현재 모니터 해상도 값
@@ -41,10 +50,16 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void init() { // 컴포넌트 세팅
         x = 100; //캐릭터의 최초 좌표.
         y = 100;
+        width = 1200;
+        height = 800;
+
+        player  = tk.getImage("src/img/player.png");
+        bullet = tk.getImage("src/img/bullet1.png");
     }
 
     public void start() { // 시작처리명령
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         addKeyListener(this);    //키보드 이벤트 실행
         th = new Thread(this);  // 스레드 생성
         th.start();
@@ -57,17 +72,57 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 KeyProcess(); // 키보드 입력처리를 하여 x,y 갱신
                 repaint(); // 갱신된 x,y값으로 이미지 새로 그리기
                 Thread.sleep(20); // 20 milli sec 로 스레드 돌리기
+                BulletProcess();
             }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void paint(@NotNull Graphics g) {
-        g.clearRect(0, 0, width, height); // 0,0 에서 위에서 정한 해상도 크기만큼 화면을 지움
-        g.drawImage(player, x, y, this); // (x, y)에 player 이미지를 그려넣음
+    public void BulletProcess() {
+        if(KeySpace)    {
+            bu = new Bullet(x, y);
+            bulletList.add(bu);
+        }
+    }
 
+    @Override
+    public void paint(Graphics g) {
+        buffImage = createImage(width, height); //화면크기와 동일
+        buffg = buffImage.getGraphics();    // 버퍼의 그래픽 객체를 얻기
+        update(g);
+//        g.clearRect(0, 0, width, height); // 0,0 에서 위에서 정한 해상도 크기만큼 화면을 지움
+//        g.drawImage(player, x, y, this); // (x, y)에 player 이미지를 그려넣음
+
+    }
+
+    public void update(Graphics g) {
+        Draw_Char(); // 실제로 그려진 그림 가져오기
+
+        Draw_Missile(); // 그려진 총알 가져오기
+
+        g.drawImage(buffImage, 0, 0, this); // 화면에 버퍼에 그린 그림을 가져와 그리기
+    }
+
+    public void Draw_Missile() {
+
+        for (int i = 0; i < bulletList.size(); i++) {
+            bu = (Bullet) (bulletList.get(i));
+
+            buffg.drawImage(bullet, bu.pos.x + 60, bu.pos.y + 30, this);
+
+            bu.move();
+
+            if (bu.pos.x > width) {   // 화면 밖으로 나가면
+                bulletList.remove(i);   // 미사일 지우기
+            }
+//
+        }
+    }
+
+    public void Draw_Char() {    // 실제로 그림들을 그릴 부분
+        buffg.clearRect(0,0,width, height);
+        buffg.drawImage(player, x, y, this);
     }
 
     @Override
@@ -80,7 +135,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             case KeyEvent.VK_LEFT :
             case KeyEvent.VK_A : KeyLeft = true; break;
             case KeyEvent.VK_RIGHT :
-            case KeyEvent.VK_D : KeyRight = true;
+            case KeyEvent.VK_D : KeyRight = true; break;
+            case KeyEvent.VK_SPACE: KeySpace = true; break;
         }
     }
 
@@ -94,7 +150,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             case KeyEvent.VK_LEFT :
             case KeyEvent.VK_A : KeyLeft = false; break;
             case KeyEvent.VK_RIGHT :
-            case KeyEvent.VK_D : KeyRight = false;
+            case KeyEvent.VK_D : KeyRight = false; break;
+            case KeyEvent.VK_SPACE: KeySpace = false;
         }
     }
 
