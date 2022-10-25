@@ -160,7 +160,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
         Draw_Missile(); // 그려진 총알 가져오기
 
-        Draw_Enemy();
+        Draw_Enemy();   // 그려진 적 가져오기
 
         g.drawImage(buffImage, 0, 0, this); // 화면에 버퍼에 그린 그림을 가져와 그리기
     }
