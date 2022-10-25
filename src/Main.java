@@ -47,7 +47,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     Bullet bu;
     Enemy en;
-
     Frame_make() {
         super("햄모험");
         init();
@@ -126,7 +125,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
         if(cnt % 200 == 0) {
             for(int i = 0; i < 5; i++) {
-                    en = new Enemy(width +25, (int)(Math.random() * (height-150))+50);
+                    en = new Enemy(width +25, 100*(i+1));
                     enemyList.add(en);
             }
         }
@@ -148,8 +147,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         buffImage = createImage(width, height); //화면크기와 동일
         buffg = buffImage.getGraphics();    // 버퍼의 그래픽 객체를 얻기
         update(g);
-//        g.clearRect(0, 0, width, height); // 0,0 에서 위에서 정한 해상도 크기만큼 화면을 지움
-//        g.drawImage(player, x, y, this); // (x, y)에 player 이미지를 그려넣음
 
     }
 
@@ -190,7 +187,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
     public void Draw_Background(){ //배경 이미지 그리는 부분
-
         buffg.clearRect(0, 0, width, height); //화면 지우기 명령은 이제 여기서 실행합니다.
 
         buffg.drawImage(backGround1, bx, 0, this);
@@ -199,7 +195,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
     public void Draw_Char() {    // 실제로 그림들을 그릴 부분
-        buffg.clearRect(0,0,width, height);
+//        buffg.clearRect(0,0,width, height);
         buffg.drawImage(player, x, y, this);
     }
 
@@ -237,9 +233,9 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void keyTyped(KeyEvent e) {}
 
     public void KeyProcess(){
-        if(KeyUp == true) y -= 5;
-        if(KeyDown == true) y += 5;
-        if(KeyLeft == true) x -= 5;
-        if(KeyRight == true) x += 5;
+        if(KeyUp == true && y>-30) y -= 7;
+        if(KeyDown == true && y<height-200) y += 7;
+        if(KeyLeft == true && x>-68) x -= 7;
+        if(KeyRight == true && x<width-210) x += 7;
     }
 }
