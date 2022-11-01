@@ -40,8 +40,9 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     Image bullet;
     Image enemy;
     Image backGround1;
-    ArrayList bulletList = new ArrayList();
-    ArrayList enemyList = new ArrayList();
+    ArrayList<Bullet> bulletList = new ArrayList();
+    ArrayList<Enemy> enemyList = new ArrayList();
+    ArrayList<EnemyBullet> eBulletList = new ArrayList();
     Image buffImage;    // 더블 버퍼링용
     Graphics buffg;     // 더블 버퍼링용 2
 
@@ -94,7 +95,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 cnt++;
                 EnemyProcess();
                 BulletProcess();
-
                 bx-=2;
                 bx2-=2;
 
@@ -115,16 +115,13 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     public void EnemyProcess() {
         for(int i = 0; i < enemyList.size(); i++) {
-            en = (Enemy)(enemyList.get(i));
+            en = enemyList.get(i);
             en.move();
-            if(en.x < -50) enemyList.remove(i);
+            if(en.x < -200) enemyList.remove(i);
         }
 
-        if(cnt % 200 == 0) {
-            for(int i = 0; i < 5; i++) {
-                    en = new Enemy(width +25, (int)(Math.random() * (height-150))+50);
-                    enemyList.add(en);
-            }
+        if((cnt % 80) == 0) {
+            enemyList.add(new Enemy(width+25, (int)(Math.random()*621)));
         }
     }
 
@@ -136,6 +133,10 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             }
         }
         if(!KeySpace) cnt = 14;
+
+    }
+
+    public void eBulletProcess() {
 
     }
 
@@ -163,8 +164,9 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     public void Draw_Enemy() {
         for(int i = 0; i < enemyList.size(); ++i) {
-            en = (Enemy)(enemyList.get(i));
+            en = enemyList.get(i);
             buffg.drawImage(enemy, en.x, en.y, this);
+
         }
     }
 
@@ -172,7 +174,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
         for (int i = 0; i < bulletList.size(); i++) {
 
-            bu = (Bullet) (bulletList.get(i));
+            bu = bulletList.get(i);
 
             buffg.drawImage(bullet, bu.pos.x + 23, bu.pos.y + 8, this);
 
@@ -233,9 +235,9 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void keyTyped(KeyEvent e) {}
 
     public void KeyProcess(){
-        if(KeyUp == true) y -= 5;
-        if(KeyDown == true) y += 5;
-        if(KeyLeft == true) x -= 5;
-        if(KeyRight == true) x += 5;
+        if(KeyUp == true && y>-30) y -= 7;
+        if(KeyDown == true && y<height-200) y += 7;
+        if(KeyLeft == true && x>-68) x -= 7;
+        if(KeyRight == true && x<width-210) x += 7;
     }
 }
