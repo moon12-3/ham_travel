@@ -22,7 +22,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     int fire_speed;
 
     int x, y; // 캐릭터의 좌표 변수
-    int bx = -1; // 배경 스크롤 변수
+    int bx = 0; // 배경 스크롤 변수
     int bx2 = 2107;
     boolean KeyUp = false; //키보드 입력 처리를 위한 변수
     boolean KeyDown = false;
@@ -40,9 +40,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     Image bullet;
     Image enemy;
     Image backGround1;
-    ArrayList<Bullet> bulletList = new ArrayList();
-    ArrayList<Enemy> enemyList = new ArrayList();
-    ArrayList<EnemyBullet> eBulletList = new ArrayList();
+    ArrayList bulletList = new ArrayList();
+    ArrayList enemyList = new ArrayList();
     Image buffImage;    // 더블 버퍼링용
     Graphics buffg;     // 더블 버퍼링용 2
 
@@ -95,6 +94,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 cnt++;
                 EnemyProcess();
                 BulletProcess();
+
                 bx-=2;
                 bx2-=2;
 
@@ -164,9 +164,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     public void Draw_Enemy() {
         for(int i = 0; i < enemyList.size(); ++i) {
-            en = enemyList.get(i);
+            en = (Enemy)enemyList.get(i);
             buffg.drawImage(enemy, en.x, en.y, this);
-
         }
     }
 
@@ -174,7 +173,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
         for (int i = 0; i < bulletList.size(); i++) {
 
-            bu = bulletList.get(i);
+            bu = (Bullet)bulletList.get(i);
 
             buffg.drawImage(bullet, bu.pos.x + 23, bu.pos.y + 8, this);
 
