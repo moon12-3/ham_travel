@@ -3,7 +3,7 @@ import java.awt.*;
 
 
 public class EnemyBullet {
-    Image image = new ImageIcon("src/img/bullet.png").getImage();
+    Image image = new ImageIcon("src/img/bullet1.png").getImage();
 
     int x, y;
     int width = image.getWidth(null);
