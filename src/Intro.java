@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class Intro extends JFrame {
     int width;
@@ -73,7 +75,15 @@ public class Intro extends JFrame {
         btnRank.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Frame_make();
+                try {
+                    new Rank();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } catch (FontFormatException ex) {
+                    ex.printStackTrace();
+                }
                 setVisible(false); // 창 안보이게 하기
             }
         });
