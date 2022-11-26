@@ -19,16 +19,29 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     int cnt;
     int eCnt;
     int iCnt = 0;
-    int hpCnt = 0;
+    int hpCnt = 0;  // 데미지 입었을 때 깜빡거리는 용
     int hppCnt = 0;
     int fire_speed;
+    int control;
 
-    int x, y; // 캐릭터의 좌표 변수
-    int[] cx = {0, 0, 0};
-    int hp;    // 캐릭터 피
+    // 게임 제어를 위한 변수
+    int status; // 게임 상태
+
+    // 게임용 변수
     int gameScore;
+    int hp; // 남은 목숨
+    int gameCnt; // 게임 흐름 컨트롤
+    int level;  // 게임 레벨
+
+    int x, y; // 캐릭터 위치
+    int speed;  // 이동 속도
+    int playerStatus = 0;   // 플레이어 캐릭터의 상태(0 : 보통 1: 데미지 2: 힐)
+    // int shield; 쉴드
+
+    int[] cx = {0, 0, 0};
     int bx = -3; // 배경 스크롤 변수
     int bx2 = 2107;
+    int buDamage;
     boolean KeyUp = false; //키보드 입력 처리를 위한 변수
     boolean KeyDown = false;
     boolean KeyLeft = false;
@@ -37,14 +50,15 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     boolean isDamaged = false;
     boolean isHealed = false;
+    boolean boss = false;   // 보스관련 추가
 
-    Thread th;  // 스레드 생성
+    Thread th;  // 스레드 객체
 
     Toolkit tk = Toolkit.getDefaultToolkit();   // 이미지 불러오는 툴킷
     Image[] player;
-    int playerStatus = 0;
     Image[] item_img;   // 아이템 이미지
     Image bullet;
+    Image bullet2;  // 적총알
     Image enemy;
     Image backGround1;
     Image[] Cloud_img; // 구름
@@ -65,6 +79,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     Frame_make() {
         super("햄모험");
+        //setIconImage(makeImage("./"));
         init();
         setSize(width, height);
         start();
@@ -82,12 +97,17 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         hp = 3;    // 초기 캐릭터 생명 (하트 3개)
         width = 1200;
         height = 800;
+        speed = 7;
+        playerStatus=0;
+        gameCnt = 0;
+        buDamage = 5;
 
         backGround1 = new ImageIcon("src/img/background1.png").getImage();
         player = new Image[2];
         player[0] = new ImageIcon("src/img/player.png").getImage();
         player[1] = new ImageIcon("src/img/playerDamaged.png").getImage();
         bullet = new ImageIcon("src/img/bullet.png").getImage();
+        bullet2 = new ImageIcon("src/img/ebullet1.png").getImage();
         enemy = new ImageIcon("src/img/enemy2.png").getImage();
 
         Cloud_img = new Image[3];
@@ -123,12 +143,46 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         try{ // 예외옵션 설정으로 에러 방지
 
             while(true){ // while 문으로 무한 루프 시키기
+
                 KeyProcess(); // 키보드 입력처리를 하여 x,y 갱신
                 repaint(); // 갱신된 x,y값으로 이미지 새로 그리기
                 Thread.sleep(20); // 20 milli sec 로 스레드 돌리기
                 cnt++;
                 iCnt++;
                 eCnt++;
+                if(boss) {
+                    // 보스가 생성되어 있는 경우
+                    if(level>1) {
+                        if(800<gameCnt&&gameCnt<1000) {
+                            if(gameCnt%60==0) {
+                                enemyList.add(new Enemy(width+25, (int)(Math.random()*621)+30));
+                            }
+                        }
+                        else if(1600<gameCnt&&gameCnt<2200) {   // 보스전 후반부
+                            if(gameCnt%30==0) {
+                                enemyList.add(new Enemy(width+25, (int)(Math.random()*621)+30));
+                            }
+                        }
+                    }
+                    if(gameCnt>2210){   // 타임아웃
+                        boss = false;
+                        gameCnt=0;
+                        System.out.println("보스 타임아웃");
+                    }
+                }
+                else {
+                    if(gameCnt<500) control = 1;
+                    else if(gameCnt<1000) control = 2;
+                    else if(gameCnt<1300) control = 0;
+                    else if(gameCnt<1700) control = 1;
+                    else if(gameCnt<2000) control = 2;
+                    else if(gameCnt<2400) control = 3;
+                    else{
+                        System.out.println("보스 등장");
+                        boss = true;
+
+                    }
+                }
                 if(isDamaged) {
                     hpCnt++;
                     playerStatus = 1;
@@ -171,7 +225,10 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             en = (Enemy) enemyList.get(i);
             en.move();
             if(en.x < -200) enemyList.remove(i);
-
+            if(eCnt % 50 == 0) {
+                bu = new Bullet(en.x, en.y + 25, -20, 1);
+                bulletList.add(bu);
+            }
             if(Crash(x, y, en.x, en.y, player[0], enemy, 2)) {
                 isDamaged = true;
                 if(hpCnt == 1) {
@@ -180,8 +237,16 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 }
             }
         }
-
-        if((eCnt % 80) == 0) {
+        int enemys = 80;
+        switch (control) {
+            case 1 : enemys = 90;
+            break;
+            case 2 : enemys = 50;
+            break;
+            case 3 : enemys = 20;
+                break;
+        }
+        if((eCnt % enemys) == 0) {
             enemyList.add(new Enemy(width+25, (int)(Math.random()*621)+30));
 
         }
@@ -192,36 +257,36 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             it = (Item)itemList.get(i);
             it.move();
 
-            if(it.x < -170) itemList.remove(i);
+            if(it.y > height+25) itemList.remove(i);
 
             if(Crash(x, y, it.x, it.y, item_img[0], player[0],1)) {
                 if(it.type%2==0) {
                     isDamaged = true;
-                    if (hpCnt == 1) {
-                        hp--;
-                        bullet = new ImageIcon("src/img/bullet.png").getImage();
-                        itemList.remove(i);
-                        gameScore -= 10;
-                    }
+                    hp--;
+                    bullet = new ImageIcon("src/img/bullet.png").getImage();
+                    buDamage = 5;
+                    itemList.remove(i);
+                    gameScore -= 10;
                 }
                 else {
                     isHealed = true;
                     hp++;
                     bullet = new ImageIcon("src/img/bullet2.png").getImage();
+                    buDamage = 10;
                     itemList.remove(i);
                     gameScore+=10;
                 }
             }
         }
         if((iCnt % 100) == 0) {
-            itemList.add(new Item(width+25, (int)(Math.random()*621)+30));
+            itemList.add(new Item((int)(Math.random()*800)+200,-130));
         }
     }
 
     public void BulletProcess() {
         if(KeySpace) {
             if(cnt%fire_speed==0) {
-                bu = new Bullet(x+50, y+50);
+                bu = new Bullet(x+50, y+50, 20, 0);
                 bulletList.add(bu);
             }
         }
@@ -229,15 +294,23 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         for(int i = 0; i < bulletList.size(); i++) {
             bu = (Bullet)bulletList.get(i);
             bu.move();
-            if(bu.x > width - 20) {
+            if(bu.x > width - 20 || bu.x < 0 || bu.y < 0 || bu.y > height) {
                 bulletList.remove(i);
             }
+
+            if(Crash(x, y, bu.x, bu.y, player[0], bullet2, 1) && bu.who == 1) {
+                isDamaged = true;
+                hp--;
+                bulletList.remove(i);
+            }
+
             for(int j = 0; j < enemyList.size(); j++) {
                 en = (Enemy) enemyList.get(j);
-                if(Crash(bu.x, bu.y, en.x, en.y, bullet, enemy, 1)) {
+                if(Crash(bu.x, bu.y, en.x, en.y, bullet, enemy, 1) && bu.who == 0) {
                     bulletList.remove(i);
-                    ((Enemy) enemyList.get(j)).hp -= 5;
+                    ((Enemy) enemyList.get(j)).hp -= buDamage;
                 }
+
                 if( ((Enemy) enemyList.get(j)).hp <= 0) {
                     enemyList.remove(j);
                     gameScore+=10;
@@ -293,7 +366,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
         Draw_Player();
 
-        Draw_Missile(); // 그려진 총알 가져오기
+        Draw_Bullet(); // 그려진 총알 가져오기
         Draw_Enemy();   // 그려진 적 가져오기
 
         Draw_Explosion();
@@ -375,12 +448,14 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
 
-    public void Draw_Missile() {
+    public void Draw_Bullet() {
 
         for (int i = 0; i < bulletList.size(); i++) {
 
             bu = (Bullet)bulletList.get(i);
-            buffg.drawImage(bullet, bu.x, bu.y, this);
+            if(bu.who == 0)buffg.drawImage(bullet, bu.x, bu.y, this);
+            if(bu.who == 1) buffg.drawImage(bullet2, bu.x, bu.y, this);
+
 //
         }
     }
@@ -464,19 +539,19 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     public void KeyProcess(){
         if(KeyUp == true && y>-30) {
-            y -= 7;
+            y -= speed;
             //playerStatus = 0;
         }
         if(KeyDown == true && y<height-200) {
-            y += 7;
+            y += speed;
             //playerStatus = 0;
         }
         if(KeyLeft == true && x>-68) {
-            x -= 7;
+            x -= speed;
             //playerStatus = 0;
         }
         if(KeyRight == true && x<width-210) {
-            x += 7;
+            x += speed;
             //playerStatus = 0;
         }
     }
