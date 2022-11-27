@@ -1,6 +1,3 @@
-
-import com.sun.istack.internal.NotNull;
-
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +29,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     int status; // 게임 상태
 
     // 게임용 변수
-    int gameScore;
+    public static int gameScore;
     int hp; // 남은 목숨
     int gameCnt; // 게임 흐름 컨트롤
     int level;  // 게임 레벨
@@ -114,13 +111,11 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         ost = Sound("src/bgm/OST.wav", true);// 배경 음악
 
         backGround1 = new ImageIcon("src/img/background1.png").getImage();
-        player = new Image[3];
+        player = new Image[2];
         Image p = new ImageIcon("src/img/player.png").getImage();
-        player[0] = p.getScaledInstance(95, 100, Image.SCALE_SMOOTH);
+        player[0] = p.getScaledInstance(90, 100, Image.SCALE_SMOOTH);
         p = new ImageIcon("src/img/playerDamaged.png").getImage();
-        player[1] = p.getScaledInstance(95, 100, Image.SCALE_SMOOTH);
-        p = new ImageIcon("src/img/player1.png").getImage();
-        player[2] = p.getScaledInstance(95, 100, Image.SCALE_SMOOTH);
+        player[1] = p.getScaledInstance(90, 100, Image.SCALE_SMOOTH);
         bullet = new ImageIcon("src/img/bullet.png").getImage();
         bullet2 = new ImageIcon("src/img/ebullet1.png").getImage();
         enemy = new ImageIcon("src/img/enemy2.png").getImage();
@@ -157,6 +152,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     @Override
     public void run() {
+        final int saveScore;
         try{ // 예외옵션 설정으로 에러 방지
 
             while(true){ // while 문으로 무한 루프 시키기
@@ -186,6 +182,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                         boss = false;
                         gameCnt=0;
                         System.out.println("보스 타임아웃");
+                        break;
                     }
                 }
                 else {
@@ -210,7 +207,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 if(hpCnt == 50) {
                     hpCnt = 0;
                     isDamaged=false;
-                    playerStatus = 0;
                 }
                 if(isHealed) {
                     hppCnt++;
@@ -219,7 +215,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 if(hppCnt == 50) {
                     hppCnt = 0;
                     isHealed=false;
-                    playerStatus = 0;
                 }
                 if(isBossDamaged) {
                     bCnt++;
@@ -235,8 +230,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 ExplosionProcess();
                 EnemyProcess();
 
-                bx-=2;
-                bx2-=2;
+                bx-=1;
+                bx2-=1;
 
                 if(bx < -(backGround1.getWidth(null))) {
                     bx = backGround1.getWidth(null);
@@ -244,6 +239,22 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 if(bx2 < -(backGround1.getWidth(null))) {
                     bx2 = backGround1.getWidth(null);
                 }
+
+                if(hp<=0){
+                    break;
+                }
+
+            }
+            if(hp<=0){
+                ost.stop();
+                new GameOver();
+                setVisible(false);
+            }else if(boss==false){
+                ost.stop();
+                GameClear gameClear = new GameClear();
+                // 게임 점수 전달
+                gameClear.setClearscore(gameScore);
+                setVisible(false);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -402,7 +413,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 }
                 if( be.hp <= 0) {   // 적의 피가 다 달았을 경우 삭제
                     boss = false;
-                    level++;
                     gameScore+=200;
                     ex = new Explosion(be.x+200 + boss_img.getWidth(null)/2, be.y-50 + boss_img.getHeight(null)/2, 0);
                     explosionList.add(ex);
@@ -417,8 +427,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             for(int j = 0; j < enemyList.size(); j++) {
                 en = (Enemy) enemyList.get(j);
                 if(Crash(bu.x, bu.y, en.x, en.y, bullet, enemy, 1) && bu.who == 0) {    // 적과 플레이어의 총알 충돌
-                    if(enemyList.size()!=0)
-                        bulletList.remove(i);
+                    bulletList.remove(i);
                     ((Enemy) enemyList.get(j)).hp -= buDamage;
                 }
 
@@ -578,12 +587,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void Draw_Player() {
         switch(playerStatus) {
             case 0 :    // 평상시
-                if((iCnt/5%2)==0) {
-                    buffg.drawImage(player[0], x, y, this);
-                }
-                else {
-                    buffg.drawImage(player[2], x, y, this);
-                }
+                buffg.drawImage(player[0], x, y, this);
                 break;
             case 1 : // 충돌
                 if((hpCnt/5%2)==0) {
@@ -634,15 +638,19 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void KeyProcess(){
         if(KeyUp == true && y>30) {
             y -= speed;
+            //playerStatus = 0;
         }
         if(KeyDown == true && y<height-120) {
             y += speed;
+            //playerStatus = 0;
         }
         if(KeyLeft == true && x>10) {
             x -= speed;
+            //playerStatus = 0;
         }
         if(KeyRight == true && x<width-110) {
             x += speed;
+            //playerStatus = 0;
         }
     }
 
@@ -655,7 +663,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
             clip.start();
             if (Loop) clip.loop(-1);   // 계속 재생할 것인지
-
 
         } catch (Exception e) {
             e.printStackTrace();
