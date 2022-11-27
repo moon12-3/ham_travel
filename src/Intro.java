@@ -10,7 +10,7 @@ public class Intro extends JFrame {
     Toolkit tk = Toolkit.getDefaultToolkit();
 
     // 사용 이미지 불러오기
-    Image backGround = new ImageIcon("src/img/background1.png").getImage();
+    Image backGround = new ImageIcon("src/img/background_intro.png").getImage();
     ImageIcon startIcon = new ImageIcon("src/img/start_btn.png");
     ImageIcon readyIcon = new ImageIcon("src/img/ready_btn.png");
     ImageIcon rankIcon = new ImageIcon("src/img/rank_btn.png");
@@ -41,19 +41,19 @@ public class Intro extends JFrame {
         JLabel labelLogo = new JLabel(logoIcon);
 
         // 버튼, 라벨 크기 & 위치 설정
-        labelLogo.setBounds(395, 200, 400, 300);
+        labelLogo.setBounds(300, 50, 600, 400);
 
-        btnStart.setBounds(160, 500, 160, 160);
+        btnStart.setBounds(85, 440, 250, 250);
         btnStart.setBorderPainted(false);
         btnStart.setContentAreaFilled(false);
         btnStart.setFocusPainted(false);
 
-        btnRank.setBounds(520, 500, 160, 160);
+        btnRank.setBounds(500, 450, 220, 220);
         btnRank.setBorderPainted(false);
         btnRank.setContentAreaFilled(false);
         btnRank.setFocusPainted(false);
 
-        btnReady.setBounds(880, 500, 160, 160);
+        btnReady.setBounds(845, 440, 250, 250);
         btnReady.setBorderPainted(false);
         btnReady.setContentAreaFilled(false);
         btnReady.setFocusPainted(false);
