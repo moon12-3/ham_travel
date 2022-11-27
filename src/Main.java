@@ -84,6 +84,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     Explosion ex;
     BossEnemy be;
 
+    Clip ost;
+
     Frame_make() {
         super("햄모험");
         //setIconImage(makeImage("./"));
@@ -109,7 +111,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         gameCnt = 0;
         buDamage = 5;
 
-        Sound("src/bgm/OST.wav", true);// 배경 음악
+        ost = Sound("src/bgm/OST.wav", true);// 배경 음악
 
         backGround1 = new ImageIcon("src/img/background1.png").getImage();
         player = new Image[3];
@@ -168,7 +170,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 gameCnt++;
                 if(boss) {
                     // 보스가 생성되어 있는 경우
-                    if(level>1) {   // 레벨이 2 이상이면 보스전 도중 소형 캐릭터들이 지원
+                    if(level>=1) {
                         if(800<gameCnt&&gameCnt<1000) {
                             if(gameCnt%60==0) {
                                 enemyList.add(new Enemy(width+25, (int)(Math.random()*621)+30, 0));
@@ -285,7 +287,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             case 4 :    // 보스 전용
                 if(eCnt%140==0||eCnt%145==0||eCnt%150==0||eCnt%155==0) {
                     for(int i = 0; i < 12; i ++) {
-                        bu = new Bullet(en.x+140, en.y + 100, (30*i+(cnt%36)*10)%360,15, 1);    //32면 앞으로만
+                        bu = new Bullet(en.x+140, en.y + 100, (30*i+(cnt%36)*10)%360,15, 1);
                         bulletList.add(bu);
                     }
                 }
@@ -643,8 +645,9 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             x += speed;
         }
     }
-    public void Sound(String file, boolean Loop){ //사운드 재생용 메소드
-        Clip clip;
+
+    public Clip Sound(String file, boolean Loop){ //사운드 재생용 메소드
+        Clip clip = null;
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
             clip = AudioSystem.getClip();
@@ -657,6 +660,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return clip;
     }
 }

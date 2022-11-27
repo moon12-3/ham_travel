@@ -17,11 +17,11 @@ public class Bullet {   // 총알 위치 파악 및 이동 위한 클래스
     }
 
     public void move() {
-        if(who==0){
+        if(who==0){ // 플레이어라면
             x += Math.cos(Math.toRadians(angle)) * speed;
             y += Math.sin(Math.toRadians(angle)) * speed;
         }
-        else{
+        else{   // 몬스터라면
             x -= Math.sin(Math.toRadians(angle)) * speed;
             y -= Math.cos(Math.toRadians(angle)) * speed;
         }

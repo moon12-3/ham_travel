@@ -6,7 +6,7 @@ public class BossEnemy extends Enemy{
     int a = -1;
     BossEnemy(int level, int x, int y) {
         super(x, y, 4);
-        hp = 500+300*level;
+        hp = 800+300*level;
         mode = 4;
         cnt = 1;
     }
@@ -39,6 +39,4 @@ public class BossEnemy extends Enemy{
         }
     }
 }
-//Enemy en=new Enemy(this, 1, gScreenWidth*100, 24000, 1, 0);// img 값이 1, kind 값이 1
-// drawImageAnc(enemy[1], buff.dis.x, buff.dis.y, 4);//보스 출력
 
