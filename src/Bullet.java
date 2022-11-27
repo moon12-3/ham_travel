@@ -3,12 +3,27 @@ import java.awt.*;
 public class Bullet {   // 총알 위치 파악 및 이동 위한 클래스
     int x;
     int y;
-    Bullet(int x, int y) {
+    int angle;  // 쏜 앵글
+    int speed;
+
+    int who;    // 누가 총을 쐈는지
+
+    Bullet(int x, int y, int angle, int speed, int who) {
         this.x = x;
-        this.y = y; // 미사일 좌표를 체크
+        this.y = y;
+        this.speed = speed;
+        this.who = who;
+        this.angle = angle;
     }
 
     public void move() {
-        x += 20;
+        if(who==0){
+            x += Math.cos(Math.toRadians(angle)) * speed;
+            y += Math.sin(Math.toRadians(angle)) * speed;
+        }
+        else{
+            x -= Math.sin(Math.toRadians(angle)) * speed;
+            y -= Math.cos(Math.toRadians(angle)) * speed;
+        }
     }
 }

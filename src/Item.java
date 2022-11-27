@@ -9,6 +9,7 @@ public class Item {
     }
 
     public void move() {
-        x-= 4;
+        y+= 4;
+        x-= 2;
     }
 }
