@@ -15,7 +15,11 @@ public class DBcon {
             String url = "jdbc:mysql://localhost:3306/ham_schema";
             String user = "root";
             String passwd = "mirim";
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
 
+            } catch (ClassNotFoundException e) {
+            }
             con = DriverManager.getConnection(url,user, passwd);
             System.out.println("DB연결 성공");
         } catch (SQLException e) {
