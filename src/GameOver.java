@@ -9,6 +9,8 @@ import java.io.InputStream;
 
 public class GameOver extends JFrame{
     int width, height;
+    Toolkit tk = Toolkit.getDefaultToolkit();
+
     Font font;
 
     Image backGround = new ImageIcon("src/img/back_gameover.png").getImage();
@@ -22,7 +24,13 @@ public class GameOver extends JFrame{
     public GameOver() throws IOException, FontFormatException {
         super("over"); // 타이틀
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         init();
+
+        Dimension screen = tk.getScreenSize();
+        int xpos = (int) (screen.getWidth() / 2 - width / 2);
+        int ypos = (int) (screen.getHeight() / 2 - height / 2);
+        setLocation(xpos, ypos);
 
         MyPanel panel = new MyPanel();
         panel.setLayout(null);

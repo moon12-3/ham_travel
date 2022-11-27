@@ -9,8 +9,9 @@ import java.io.InputStream;
 import java.sql.*;
 
 public class Rank extends JFrame {
-    int width;
-    int height;
+    int width, height;
+    Toolkit tk = Toolkit.getDefaultToolkit();
+
     JLabel[] nameArr = new JLabel[5];
     JLabel[] scoreArr = new JLabel[5];
     Font font;
@@ -28,7 +29,13 @@ public class Rank extends JFrame {
     public Rank() throws SQLException, IOException, FontFormatException {
         super("rank"); // 타이틀
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         init();
+
+        Dimension screen = tk.getScreenSize();
+        int xpos = (int) (screen.getWidth() / 2 - width / 2);
+        int ypos = (int) (screen.getHeight() / 2 - height / 2);
+        setLocation(xpos, ypos);
 
         MyPanel panel = new MyPanel();
         panel.setLayout(null);

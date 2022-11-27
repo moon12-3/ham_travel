@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class Intro extends JFrame {
-    int width;
-    int height;
+    int width, height;
+    Toolkit tk = Toolkit.getDefaultToolkit();
 
     // 사용 이미지 불러오기
     Image backGround = new ImageIcon("src/img/background1.png").getImage();
@@ -25,6 +25,13 @@ public class Intro extends JFrame {
         super("intro"); // 타이틀
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        init();
+
+        Dimension screen = tk.getScreenSize();
+        int xpos = (int) (screen.getWidth() / 2 - width / 2);
+        int ypos = (int) (screen.getHeight() / 2 - height / 2);
+        setLocation(xpos, ypos);
+
         MyPanel panel = new MyPanel();
         panel.setLayout(null);
 
@@ -32,8 +39,6 @@ public class Intro extends JFrame {
         JButton btnRank = new JButton(rankIcon);
         JButton btnReady = new JButton(readyIcon);
         JLabel labelLogo = new JLabel(logoIcon);
-
-        init();
 
         // 버튼, 라벨 크기 & 위치 설정
         labelLogo.setBounds(395, 200, 400, 300);
