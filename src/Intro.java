@@ -75,7 +75,7 @@ public class Intro extends JFrame {
         btnRank.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
+                /*try {
                     new Rank();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -83,7 +83,7 @@ public class Intro extends JFrame {
                     ex.printStackTrace();
                 } catch (FontFormatException ex) {
                     ex.printStackTrace();
-                }
+                }*/
                 setVisible(false); // 창 안보이게 하기
             }
         });

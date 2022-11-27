@@ -1,15 +1,18 @@
 
 import com.sun.istack.internal.NotNull;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.util.*;
 
 public class Main {
     public static void main(String args[]) {
-        new Frame_make();
+        //new Frame_make();
+        new Intro();
     }
 }
 
@@ -21,6 +24,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     int iCnt = 0;
     int hpCnt = 0;  // 데미지 입었을 때 깜빡거리는 용
     int hppCnt = 0;
+    int bCnt = 0;
     int fire_speed;
     int control;
 
@@ -50,6 +54,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     boolean isDamaged = false;
     boolean isHealed = false;
+    boolean isBossDamaged = false;
     boolean boss = false;   // 보스관련 추가
 
     Thread th;  // 스레드 객체
@@ -99,10 +104,12 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         hp = 3;    // 초기 캐릭터 생명 (하트 3개)
         width = 1200;
         height = 800;
-        speed = 7;
+        speed = 10;
         playerStatus=0;
         gameCnt = 0;
         buDamage = 5;
+
+        Sound("src/bgm/OST.wav", true);// 배경 음악
 
         backGround1 = new ImageIcon("src/img/background1.png").getImage();
         player = new Image[2];
@@ -208,6 +215,15 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                     hppCnt = 0;
                     isHealed=false;
                 }
+                if(isBossDamaged) {
+                    bCnt++;
+                    boss_img = new ImageIcon("src/img/bossDamaged.png").getImage();
+                }
+                if(bCnt==30) {
+                    boss_img = new ImageIcon("src/img/boss.png").getImage();
+                    bCnt = 0;
+                    isBossDamaged = false;
+                }
                 itemProcess();
                 BulletProcess();
                 ExplosionProcess();
@@ -280,7 +296,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             en.move();
             if(en.x < -200) enemyList.remove(i);
             move(en.shootType, en);
-            if(Crash(x, y, en.x, en.y, player[0], enemy, 2)) {
+            if(Crash(x, y, en.x, en.y, player[0], enemy, 2)) {  // 플레이어와 적 충돌
                 isDamaged = true;
                 if(hpCnt == 1) {
                     hp--;
@@ -292,7 +308,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         if(boss) {
             be.move();
             move(be.shootType, be);
-            if(Crash(x, y, be.x, be.y, player[0], boss_img, 2)) {
+            if(Crash(x, y, be.x, be.y, player[0], boss_img, 2)) {   // 플레이어와 보스 충돌
                 isDamaged = true;
                 if(hpCnt == 1) {
                     hp--;
@@ -323,8 +339,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
             if(it.y > height+25) itemList.remove(i);
 
-            if(Crash(x, y, it.x, it.y, item_img[0], player[0],1)) {
-                if(it.type%2==0) {
+            if(Crash(x, y, it.x, it.y, item_img[0], player[0],1)) { // 플레이어와 아이템 충돌
+                if(it.type%2==0) {  // 복숭아
                     isDamaged = true;
                     hp--;
                     bullet = new ImageIcon("src/img/bullet.png").getImage();
@@ -332,7 +348,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                     itemList.remove(i);
                     gameScore -= 10;
                 }
-                else {
+                else {  // 고구마
                     isHealed = true;
                     hp++;
                     bullet = new ImageIcon("src/img/bullet2.png").getImage();
@@ -342,7 +358,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 }
             }
         }
-        if((iCnt % 100) == 0) {
+        if((iCnt % 100) == 0) { // 100마다 아이템 생성
             itemList.add(new Item((int)(Math.random()*800)+200,-130));
         }
     }
@@ -350,6 +366,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void BulletProcess() {
         if(KeySpace) {
             if(cnt%fire_speed==0) {
+                Sound("src/bgm/bullet.wav", false);
                 //gameCnt+=3;
                 bu = new Bullet(x+50, y+50, 0, 25, 0);
                 bulletList.add(bu);
@@ -372,8 +389,9 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
             }
             if(boss) {
-                if(Crash(bu.x, bu.y, be.x, be.y, bullet, boss_img, 1) && bu.who == 0) {    // 적과 총알 충돌
+                if(Crash(bu.x, bu.y, be.x, be.y, bullet, boss_img, 1) && bu.who == 0) {    // 보스와 플레이어의 총알 충돌
                     bulletList.remove(i);
+                    isBossDamaged = true;
                     be.hp -= buDamage;
                 }
                 if( be.hp <= 0) {   // 적의 피가 다 달았을 경우 삭제
@@ -397,6 +415,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 }
 
                 if( ((Enemy) enemyList.get(j)).hp <= 0) {   // 적의 피가 다 달았을 경우 삭제
+                    Sound("src/bgm/explo.wav", false);
                     enemyList.remove(j);
                     gameScore+=10;
                     ex = new Explosion(en.x + enemy.getWidth(null)/2, en.y + enemy.getHeight(null)/2, 0);
@@ -616,5 +635,21 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             x += speed;
             //playerStatus = 0;
         }
+    }
+    public void Sound(String file, boolean Loop){ //사운드 재생용 메소드
+        Clip clip;
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+
+            clip.start();
+            if (Loop) clip.loop(-1);   // 계속 재생할 것인지
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
