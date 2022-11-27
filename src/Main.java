@@ -100,7 +100,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void init() { // 컴포넌트 세팅
         x = 100; //캐릭터의 최초 좌표.
         y = 100;
-        hp = 3;    // 초기 캐릭터 생명 (하트 3개)
+        hp = 100;    // 초기 캐릭터 생명 (하트 3개)
         width = 1200;
         height = 800;
         speed = 10;
@@ -420,7 +420,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                     explosionList.add(ex);
                     ex = new Explosion((be.x+100) + boss_img.getWidth(null)/2, be.y/2 + boss_img.getHeight(null)/2, 0);
                     explosionList.add(ex);
-
+                    break;
                 }
             }
 
