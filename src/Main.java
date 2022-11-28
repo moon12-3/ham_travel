@@ -32,6 +32,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public static int gameScore;
     int hp; // 남은 목숨
     int gameCnt; // 게임 흐름 컨트롤
+    int deathTimer = 0;
     int level;  // 게임 레벨
 
     int x, y; // 캐릭터 위치
@@ -66,6 +67,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     Image backGround1;
     Image[] Cloud_img; // 구름
     Image[] Explo_img;  // 폭발이펙트용
+    Image heart;    // 남은 목숨 표시용
     ArrayList bulletList = new ArrayList();
     ArrayList enemyList = new ArrayList();
     ArrayList itemList = new ArrayList();
@@ -100,26 +102,32 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void init() { // 컴포넌트 세팅
         x = 100; //캐릭터의 최초 좌표.
         y = 100;
-        hp = 100;    // 초기 캐릭터 생명 (하트 3개)
+        hp = 3;    // 초기 캐릭터 생명 (하트 3개)
         width = 1200;
         height = 800;
         speed = 10;
         playerStatus=0;
-        gameCnt = 0;
+        gameCnt = 0;    // 보스전 테스트 시 2000으로 설정하면 됨
         buDamage = 5;
+        playerStatus = 0;
+
+        level = 1;
 
         ost = Sound("src/bgm/OST.wav", true);// 배경 음악
 
         backGround1 = new ImageIcon("src/img/background1.png").getImage();
-        player = new Image[2];
+        player = new Image[3];
         Image p = new ImageIcon("src/img/player.png").getImage();
         player[0] = p.getScaledInstance(90, 100, Image.SCALE_SMOOTH);
         p = new ImageIcon("src/img/playerDamaged.png").getImage();
         player[1] = p.getScaledInstance(90, 100, Image.SCALE_SMOOTH);
+        p = new ImageIcon("src/img/player1.png").getImage();
+        player[2] = p.getScaledInstance(90, 100, Image.SCALE_SMOOTH);
         bullet = new ImageIcon("src/img/bullet.png").getImage();
         bullet2 = new ImageIcon("src/img/ebullet1.png").getImage();
         enemy = new ImageIcon("src/img/enemy2.png").getImage();
         boss_img = new ImageIcon("src/img/boss.png").getImage();
+        heart = new ImageIcon("src/img/heart.png").getImage();
 
         Cloud_img = new Image[3];
         for(int i = 0; i < Cloud_img.length; i++) {
@@ -182,7 +190,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                         boss = false;
                         gameCnt=0;
                         System.out.println("보스 타임아웃");
-                        break;
                     }
                 }
                 else {
@@ -197,7 +204,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                         boss = true;
                         be = new BossEnemy(level, width, 250);
                         gameCnt = 0;
-                        level++;
                     }
                 }
                 if(isDamaged) {
@@ -206,6 +212,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 }
                 if(hpCnt == 50) {
                     hpCnt = 0;
+                    playerStatus = 0;
                     isDamaged=false;
                 }
                 if(isHealed) {
@@ -215,6 +222,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 if(hppCnt == 50) {
                     hppCnt = 0;
                     isHealed=false;
+                    playerStatus = 0;
                 }
                 if(isBossDamaged) {
                     bCnt++;
@@ -243,13 +251,20 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 if(hp<=0){
                     break;
                 }
+                if(boss==false && level>1){
+                    deathTimer++;
+                }
+                if(deathTimer>=30) {
+                    break;
+                }
 
             }
             if(hp<=0){
                 ost.stop();
                 new GameOver();
                 setVisible(false);
-            }else if(boss==false){
+            }
+            if(boss==false && level>1){
                 ost.stop();
                 GameClear gameClear = new GameClear();
                 // 게임 점수 전달
@@ -411,7 +426,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                     isBossDamaged = true;
                     be.hp -= buDamage;
                 }
-                if( be.hp <= 0) {   // 적의 피가 다 달았을 경우 삭제
+                if( be.hp <= 0) {   // 보스의 피가 다 달았을 경우 삭제
                     boss = false;
                     gameScore+=200;
                     ex = new Explosion(be.x+200 + boss_img.getWidth(null)/2, be.y-50 + boss_img.getHeight(null)/2, 0);
@@ -420,7 +435,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                     explosionList.add(ex);
                     ex = new Explosion((be.x+100) + boss_img.getWidth(null)/2, be.y/2 + boss_img.getHeight(null)/2, 0);
                     explosionList.add(ex);
-                    break;
+                    level++;
+                    System.out.println(level);
                 }
             }
 
@@ -488,10 +504,12 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
     public void Draw_StatusText() {
         buffg.setFont(new Font("Default", Font.BOLD, 20));
-
         buffg.drawString("SCORE : " + gameScore, 1000, 70);
         buffg.drawString("HP " + hp, 1000, 90);
         buffg.drawString("Enemy Count : " + enemyList.size(), 1000, 110);
+        for(int i = 0; i < hp; i++) {
+            buffg.drawImage(heart, 50+i*70, height-90, this);
+        }
     }
 
     public void Draw_Enemy() {
@@ -587,7 +605,12 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void Draw_Player() {
         switch(playerStatus) {
             case 0 :    // 평상시
-                buffg.drawImage(player[0], x, y, this);
+                if((hpCnt/5%2)==0) {
+                    buffg.drawImage(player[0], x, y, this);
+                }
+                else {
+                    buffg.drawImage(player[2], x, y, this);
+                }
                 break;
             case 1 : // 충돌
                 if((hpCnt/5%2)==0) {

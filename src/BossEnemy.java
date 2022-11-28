@@ -6,7 +6,7 @@ public class BossEnemy extends Enemy{
     int a = -1;
     BossEnemy(int level, int x, int y) {
         super(x, y, 4);
-        hp = 800+300*level;
+        hp = 1500+300*level;
         mode = 4;
         cnt = 1;
     }

@@ -82,6 +82,7 @@ public class Rank extends JFrame {
         DBcon db = new DBcon();
 
         // db select
+
         Statement st = db.getCon().createStatement();
         ResultSet resultSet = st.executeQuery("SELECT * FROM " +
                 "( SELECT * FROM ham_score ORDER BY userScore DESC )A " +

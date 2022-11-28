@@ -24,7 +24,8 @@ public class DBcon {
             System.out.println("DB연결 성공");
         } catch (SQLException e) {
             System.out.println("DB연결 실패");
-            System.out.print("사유 : " + e.getMessage());
+            System.out.print("사유 : " );
+            e.printStackTrace();
         }
     }
 
