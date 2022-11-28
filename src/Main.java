@@ -126,7 +126,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         bullet2 = new ImageIcon("src/img/ebullet1.png").getImage();
         enemy = new ImageIcon("src/img/enemy2.png").getImage();
         boss_img = new ImageIcon("src/img/boss.png").getImage();
-        heart = new ImageIcon("src/img/heart.png").getImage();
+        heart = new ImageIcon("src/img/heart.png").getImage();//
 
         Cloud_img = new Image[3];
         for(int i = 0; i < Cloud_img.length; i++) {

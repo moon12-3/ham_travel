@@ -1,7 +1,12 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -15,6 +20,7 @@ public class Intro extends JFrame {
     ImageIcon readyIcon = new ImageIcon("src/img/ready_btn.png");
     ImageIcon rankIcon = new ImageIcon("src/img/rank_btn.png");
     ImageIcon logoIcon = new ImageIcon("src/img/main_logo.png");
+    Clip ost;
 
     public void init() { // 컴포넌트 세팅
         width = 1200;
@@ -26,6 +32,8 @@ public class Intro extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         init();
+
+        ost = Sound("src/bgm/intro.wav", true);
 
         Dimension screen = tk.getScreenSize();
         int xpos = (int) (screen.getWidth() / 2 - width / 2);
@@ -73,6 +81,7 @@ public class Intro extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Frame_make();
+                ost.stop();
                 setVisible(false); // 창 안보이게 하기
             }
         });
@@ -89,6 +98,7 @@ public class Intro extends JFrame {
                 } catch (FontFormatException ex) {
                     ex.printStackTrace();
                 }
+                ost.stop();
                 setVisible(false); // 창 안보이게 하기
             }
         });
@@ -97,6 +107,7 @@ public class Intro extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Frame_make();
+                ost.stop();
                 setVisible(false); // 창 안보이게 하기
             }
         });
@@ -112,5 +123,21 @@ public class Intro extends JFrame {
     }
     public static void main(String[] args) {
         new Intro();
+    }
+
+    public Clip Sound(String file, boolean Loop){ //사운드 재생용 메소드
+        Clip clip = null;
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+
+            clip.start();
+            if (Loop) clip.loop(-1);   // 계속 재생할 것인지
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return clip;
     }
 }

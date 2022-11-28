@@ -1,3 +1,6 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +16,8 @@ public class GameClear extends JFrame {
 
     Font font;
     int clearscore;
+
+    Clip ost;
 
     // 게임 점수 전달
     public void setClearscore(int clearscore) {
@@ -32,6 +37,8 @@ public class GameClear extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         init();
+
+        ost = Sound("src/bgm/clear.wav", false);
 
         Dimension screen = tk.getScreenSize();
         int xpos = (int) (screen.getWidth() / 2 - width / 2);
@@ -77,6 +84,7 @@ public class GameClear extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Intro();
+                ost.stop();
                 setVisible(false); // 창 안보이게 하기
             }
         });
@@ -94,6 +102,7 @@ public class GameClear extends JFrame {
                 } catch (FontFormatException ex) {
                     ex.printStackTrace();
                 }
+                ost.stop();
                 setVisible(false); // 창 안보이게 하기
             }
         });
@@ -115,6 +124,22 @@ public class GameClear extends JFrame {
 
     public static void main(String[] args) throws IOException, FontFormatException {
         new GameClear();
+    }
+
+    public Clip Sound(String file, boolean Loop){ //사운드 재생용 메소드
+        Clip clip = null;
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+
+            clip.start();
+            if (Loop) clip.loop(-1);   // 계속 재생할 것인지
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return clip;
     }
 }
 

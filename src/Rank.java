@@ -1,3 +1,4 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,8 @@ public class Rank extends JFrame {
     JLabel[] scoreArr = new JLabel[5];
     Font font;
 
+    Clip ost;
+
     // 사용 이미지 불러오기
     Image backGround = new ImageIcon("src/img/rankbackground.png").getImage();
     ImageIcon introIcon = new ImageIcon("src/img/back_intro.png");
@@ -31,6 +34,8 @@ public class Rank extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         init();
+
+        ost = Sound("src/bgm/intro.wav", true);
 
         Dimension screen = tk.getScreenSize();
         int xpos = (int) (screen.getWidth() / 2 - width / 2);
@@ -75,6 +80,7 @@ public class Rank extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Intro();
+                ost.stop();
                 setVisible(false); // 창 안보이게 하기
             }
         });
@@ -129,5 +135,21 @@ public class Rank extends JFrame {
 
     public static void main(String[] args) throws SQLException, IOException, FontFormatException {
         new Rank();
+    }
+
+    public Clip Sound(String file, boolean Loop){ //사운드 재생용 메소드
+        Clip clip = null;
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+
+            clip.start();
+            if (Loop) clip.loop(-1);   // 계속 재생할 것인지
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return clip;
     }
 }
