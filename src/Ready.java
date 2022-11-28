@@ -1,3 +1,4 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,7 +7,6 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 
 public class Ready extends JFrame {
     int width, height;
@@ -27,7 +27,7 @@ public class Ready extends JFrame {
         height = 800;
     }
 
-    public Ready() {
+    public Ready(Clip ost) {
         super("ready"); // 타이틀
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -109,6 +109,7 @@ public class Ready extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Intro();
+                ost.stop();
                 setVisible(false); // 창 안보이게 하기
             }
         });

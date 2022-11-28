@@ -32,7 +32,6 @@ public class Intro extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         init();
-
         ost = Sound("src/bgm/intro.wav", true);
 
         Dimension screen = tk.getScreenSize();
@@ -106,8 +105,7 @@ public class Intro extends JFrame {
         btnReady.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Ready();
-                ost.stop();
+                new Ready(ost);
                 setVisible(false); // 창 안보이게 하기
             }
         });
