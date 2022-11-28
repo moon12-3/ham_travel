@@ -15,6 +15,8 @@ public class GameClear extends JFrame {
     Toolkit tk = Toolkit.getDefaultToolkit();
 
     Font font;
+    Color colorBrown = new Color(0x312500);
+
     int clearscore;
 
     Clip ost;
@@ -63,6 +65,7 @@ public class GameClear extends JFrame {
         JButton btnIntro = new JButton("메인으로");
         btnIntro.setBounds(250, 530, 230, 80);
         btnIntro.setFont(font.deriveFont(Font.BOLD, 40));
+        btnIntro.setForeground(colorBrown);
         btnIntro.setHorizontalAlignment(JLabel.CENTER);
         btnIntro.setBorderPainted(false);
         btnIntro.setContentAreaFilled(false);
@@ -71,6 +74,7 @@ public class GameClear extends JFrame {
         JButton btnSave = new JButton("저장하기");
         btnSave.setBounds(710, 530, 230, 80);
         btnSave.setFont(font.deriveFont(Font.BOLD, 40));
+        btnSave.setForeground(colorBrown);
         btnSave.setHorizontalAlignment(JLabel.CENTER);
         btnSave.setBorderPainted(false);
         btnSave.setContentAreaFilled(false);

@@ -2,6 +2,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
+
 public class DBcon {
 
     private Connection con;
@@ -19,6 +21,7 @@ public class DBcon {
                 Class.forName("com.mysql.cj.jdbc.Driver");
 
             } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
             con = DriverManager.getConnection(url,user, passwd);
             System.out.println("DB연결 성공");

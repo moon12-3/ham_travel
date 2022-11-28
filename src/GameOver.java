@@ -15,6 +15,7 @@ public class GameOver extends JFrame{
     Toolkit tk = Toolkit.getDefaultToolkit();
 
     Font font;
+    Color colorBrown = new Color(0x312500);
 
     Image backGround = new ImageIcon("src/img/back_gameover.png").getImage();
 
@@ -57,6 +58,7 @@ public class GameOver extends JFrame{
         JButton btnReturn = new JButton("다시하기");
         btnReturn.setBounds(250, 530, 230, 80);
         btnReturn.setFont(font.deriveFont(Font.BOLD, 40));
+        btnReturn.setForeground(colorBrown);
         btnReturn.setHorizontalAlignment(JLabel.CENTER);
         btnReturn.setBorderPainted(false);
         btnReturn.setContentAreaFilled(false);
@@ -65,6 +67,7 @@ public class GameOver extends JFrame{
         JButton btnIntro = new JButton("메인으로");
         btnIntro.setBounds(710, 530, 230, 80);
         btnIntro.setFont(font.deriveFont(Font.BOLD, 40));
+        btnIntro.setForeground(colorBrown);
         btnIntro.setHorizontalAlignment(JLabel.CENTER);
         btnIntro.setBorderPainted(false);
         btnIntro.setContentAreaFilled(false);

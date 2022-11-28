@@ -15,7 +15,8 @@ public class Input extends JFrame {
     Toolkit tk = Toolkit.getDefaultToolkit();
 
     Font font;
-    Frame_make frame_make;
+    Color colorBrown = new Color(0x312500);
+
     String name;
     int score;
     JLabel labelGetScore;
@@ -66,6 +67,7 @@ public class Input extends JFrame {
 
         JLabel labelName = new JLabel("NAME");
         labelName.setFont(font.deriveFont(Font.BOLD, 43));
+        labelName.setForeground(colorBrown);
         labelName.setHorizontalAlignment(JLabel.CENTER);
         labelName.setBounds(300, 295, 300, 70);
         
@@ -73,10 +75,12 @@ public class Input extends JFrame {
         textName.setBounds(560, 305, 230, 50);
         textName.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         textName.setFont(font.deriveFont(Font.BOLD, 30));
+        textName.setForeground(colorBrown);
         name = textName.getText();
 
         JLabel labelScore = new JLabel("SCORE");
         labelScore.setFont(font.deriveFont(Font.BOLD, 43));
+        labelScore.setForeground(colorBrown);
         labelScore.setHorizontalAlignment(JLabel.CENTER);
         labelScore.setBounds(300, 415, 300, 70);
 
@@ -93,6 +97,7 @@ public class Input extends JFrame {
 
         JLabel labelSave = new JLabel("SAVE");
         labelSave.setFont(font.deriveFont(Font.BOLD, 43));
+        labelSave.setForeground(colorBrown);
         labelSave.setHorizontalAlignment(JLabel.CENTER);
         labelSave.setBounds(485, 530, 230, 80);
 
