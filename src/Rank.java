@@ -15,6 +15,7 @@ public class Rank extends JFrame {
     JLabel[] nameArr = new JLabel[5];
     JLabel[] scoreArr = new JLabel[5];
     Font font;
+    Color colorBrown = new Color(0x312500);
 
     // 사용 이미지 불러오기
     Image backGround = new ImageIcon("src/img/rankbackground.png").getImage();
@@ -60,9 +61,11 @@ public class Rank extends JFrame {
         JLabel nameLabel = new JLabel("NAME");
         nameLabel.setHorizontalAlignment(JLabel.CENTER);
         nameLabel.setFont(font.deriveFont(Font.BOLD, 43));
+        nameLabel.setForeground(colorBrown);
         JLabel scoreLabel = new JLabel("SCORE");
         scoreLabel.setHorizontalAlignment(JLabel.CENTER);
         scoreLabel.setFont(font.deriveFont(Font.BOLD, 43));
+        scoreLabel.setForeground(colorBrown);
 
         nameLabel.setBounds(315, 170, 150, 65);
         scoreLabel.setBounds(735, 170, 150, 65);
@@ -94,12 +97,14 @@ public class Rank extends JFrame {
 
             nameArr[i] = new JLabel(name);
             nameArr[i].setFont(font.deriveFont(Font.BOLD, 40));
+            nameArr[i].setForeground(colorBrown);
             nameArr[i].setBounds(315, 270+70*i, 150, 60);
             nameArr[i].setHorizontalAlignment(JLabel.CENTER);
             panel.add(nameArr[i]);
 
             scoreArr[i] = new JLabel(Integer.toString(score));
             scoreArr[i].setFont(font.deriveFont(Font.BOLD, 40));
+            scoreArr[i].setForeground(colorBrown);
             scoreArr[i].setBounds(735, 270+70*i, 150, 60);
             scoreArr[i].setHorizontalAlignment(JLabel.CENTER);
             panel.add(scoreArr[i]);

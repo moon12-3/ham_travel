@@ -96,7 +96,7 @@ public class Intro extends JFrame {
         btnReady.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Frame_make();
+                new Ready();
                 setVisible(false); // 창 안보이게 하기
             }
         });
