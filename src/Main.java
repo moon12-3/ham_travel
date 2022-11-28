@@ -106,7 +106,6 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         width = 1200;
         height = 800;
         speed = 10;
-        playerStatus=0;
         gameCnt = 0;    // 보스전 테스트 시 2000으로 설정하면 됨
         buDamage = 5;
         playerStatus = 0;
@@ -605,7 +604,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void Draw_Player() {
         switch(playerStatus) {
             case 0 :    // 평상시
-                if((hpCnt/5%2)==0) {
+                if((iCnt/5%2)==0) {
                     buffg.drawImage(player[0], x, y, this);
                 }
                 else {
@@ -661,19 +660,15 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public void KeyProcess(){
         if(KeyUp == true && y>30) {
             y -= speed;
-            //playerStatus = 0;
         }
         if(KeyDown == true && y<height-120) {
             y += speed;
-            //playerStatus = 0;
         }
         if(KeyLeft == true && x>10) {
             x -= speed;
-            //playerStatus = 0;
         }
         if(KeyRight == true && x<width-110) {
             x += speed;
-            //playerStatus = 0;
         }
     }
 
