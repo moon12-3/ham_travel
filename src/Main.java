@@ -381,7 +381,8 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 }
                 else {  // 고구마
                     isHealed = true;
-                    hp++;
+                    if(hp<17)
+                        hp++;
                     bullet = new ImageIcon("src/img/bullet2.png").getImage();
                     buDamage = 10;
                     itemList.remove(i);
