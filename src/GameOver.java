@@ -54,7 +54,7 @@ public class GameOver extends JFrame{
             e.printStackTrace();
         }
 
-
+        // 버튼 추가 및 설정
         JButton btnReturn = new JButton("다시하기");
         btnReturn.setBounds(250, 530, 230, 80);
         btnReturn.setFont(font.deriveFont(Font.BOLD, 40));
@@ -76,6 +76,7 @@ public class GameOver extends JFrame{
         panel.add(btnReturn);
         panel.add(btnIntro);
 
+        // 화면 전환용 리스너
         btnReturn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

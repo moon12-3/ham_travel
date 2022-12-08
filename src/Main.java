@@ -41,7 +41,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     // int shield; 쉴드
 
     int[] cx = {0, 0, 0};
-    int bx = -3; // 배경 스크롤 변수
+    int bx = -4; // 배경 스크롤 변수
     int bx2 = 2107;
     int buDamage;   // 총알의 데미지
     boolean KeyUp = false; //키보드 입력 처리를 위한 변수
@@ -240,6 +240,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 bx-=1;
                 bx2-=1;
 
+                // 배경 이어지게 하기
                 if(bx < -(backGround1.getWidth(null))) {
                     bx = backGround1.getWidth(null);
                 }

@@ -40,7 +40,9 @@ public class Ready extends JFrame {
 
         MyPanel panel = new MyPanel();
         panel.setLayout(null);
+        backGround = backGround1.getImage();
 
+        // 외부 폰트 사용하기
         try {
             InputStream inputStream = new BufferedInputStream(
                     new FileInputStream("src/font/dunggeunmo.ttf"));
@@ -51,22 +53,19 @@ public class Ready extends JFrame {
             e.printStackTrace();
         }
 
+        // 버튼, 라벨 추가 및 설정
         JButton btnNext = new JButton(nextIcon);
+        btnNext.setBounds(1025, 120, 50, 70);
+        btnNext.setBorderPainted(false);
+        btnNext.setContentAreaFilled(false);
+        btnNext.setFocusPainted(false);
+
         JButton btnPre = new JButton(preIcon);
-        backGround = backGround1.getImage();
-
-        // 버튼, 라벨 크기 & 위치 설정
-
         btnPre.setBounds(125, 120, 50, 70);
         btnPre.setBorderPainted(false);
         btnPre.setContentAreaFilled(false);
         btnPre.setFocusPainted(false);
         btnPre.setVisible(false);
-
-        btnNext.setBounds(1025, 120, 50, 70);
-        btnNext.setBorderPainted(false);
-        btnNext.setContentAreaFilled(false);
-        btnNext.setFocusPainted(false);
 
         JButton btnIntro = new JButton(introIcon);
         btnIntro.setBounds(40, 655, 90, 90);
@@ -74,9 +73,6 @@ public class Ready extends JFrame {
         btnIntro.setContentAreaFilled(false);
         btnIntro.setFocusPainted(false);
 
-        JLabel labelItem1 = new JLabel("");
-
-        panel.add(labelItem1);
         panel.add(btnIntro);
         panel.add(btnNext);
         panel.add(btnPre);
@@ -86,7 +82,7 @@ public class Ready extends JFrame {
         this.setVisible(true);
         this.setResizable(false);
 
-        // 버튼 기능 설정
+        // 화면 전환용 리스너
         btnPre.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

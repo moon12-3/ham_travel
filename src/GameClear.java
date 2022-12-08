@@ -35,7 +35,7 @@ public class GameClear extends JFrame {
     }
 
     public GameClear() throws IOException, FontFormatException {
-        super("clear"); // 타이틀
+        super("clear");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         init();
@@ -61,7 +61,7 @@ public class GameClear extends JFrame {
             e.printStackTrace();
         }
 
-
+        // 버튼 추가 및 설정
         JButton btnIntro = new JButton("메인으로");
         btnIntro.setBounds(250, 530, 230, 80);
         btnIntro.setFont(font.deriveFont(Font.BOLD, 40));
@@ -83,7 +83,7 @@ public class GameClear extends JFrame {
         panel.add(btnIntro);
         panel.add(btnSave);
 
-
+        // 화면 전환용 리스너
         btnIntro.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

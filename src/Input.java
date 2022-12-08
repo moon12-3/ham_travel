@@ -65,12 +65,14 @@ public class Input extends JFrame {
             e.printStackTrace();
         }
 
+        // 버튼, 라벨 추가 및 설정
         JLabel labelName = new JLabel("NAME");
         labelName.setFont(font.deriveFont(Font.BOLD, 43));
         labelName.setForeground(colorBrown);
         labelName.setHorizontalAlignment(JLabel.CENTER);
         labelName.setBounds(300, 295, 300, 70);
-        
+
+        // 사용자에게 이름 받아오기
         JTextField textName = new JTextField();
         textName.setBounds(560, 305, 230, 50);
         textName.setBorder(javax.swing.BorderFactory.createEmptyBorder());
@@ -108,6 +110,7 @@ public class Input extends JFrame {
         panel.add(labelSave);
         panel.add(btnSave);
 
+        // db 테이블에 값 insert 하기
         btnSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -119,7 +122,10 @@ public class Input extends JFrame {
                 try {
                     ps = db.getCon().prepareStatement("insert into ham_score(userName, userScore) " +
                             "values('"+textName.getText()+"', "+score+");");
+                    // 넘겨온 score 값과 입력받은 name을 table에 insert
                     ps.executeUpdate();
+                    db.getCon().close();
+                    ps.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -135,68 +141,9 @@ public class Input extends JFrame {
                 }
                 ost.stop();
                 setVisible(false); // 창 안보이게 하기
+
             }
         });
-
-
-/*
-        JButton btnIntro = new JButton(introIcon);
-        btnIntro.setBounds(40, 655, 90, 90);
-        btnIntro.setBorderPainted(false);
-        btnIntro.setContentAreaFilled(false);
-        btnIntro.setFocusPainted(false);
-
-        JLabel labelName = new JLabel("NAME");
-        labelName.setFont(new Font(null, Font.BOLD, 42));
-        labelName.setHorizontalAlignment(JLabel.CENTER);
-        JLabel scoreLabel = new JLabel("SCORE");
-        scoreLabel.setFont(new Font(null, Font.BOLD, 42));
-        scoreLabel.setHorizontalAlignment(JLabel.CENTER);
-
-        labelName.setBounds(315, 170, 150, 65);
-        scoreLabel.setBounds(735, 170, 150, 65);
-
-        panel.add(labelName);
-        panel.add(scoreLabel);
-        panel.add(btnIntro);
-
-        btnIntro.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new Intro();
-                setVisible(false); // 창 안보이게 하기
-            }
-        });
-
-        DBcon db = new DBcon();
-        // db select
-        Statement st = db.getCon().createStatement();
-        ResultSet resultSet = st.executeQuery("SELECT * FROM ( SELECT * FROM ham_score ORDER BY userScore DESC )A LIMIT 5");
-        int i=0;
-        while(resultSet.next()){
-            String name = resultSet.getString("userName");
-            int score = resultSet.getInt("userScore");
-
-            nameArr[i] = new JLabel(name);
-            nameArr[i].setFont(new Font(null, Font.BOLD, 40));
-            nameArr[i].setBounds(315, 270+70*i, 150, 60);
-            nameArr[i].setHorizontalAlignment(JLabel.CENTER);
-            panel.add(nameArr[i]);
-
-            scoreArr[i] = new JLabel(Integer.toString(score));
-            scoreArr[i].setFont(new Font(null, Font.BOLD, 40));
-            scoreArr[i].setBounds(735, 270+70*i, 150, 60);
-            scoreArr[i].setHorizontalAlignment(JLabel.CENTER);
-            panel.add(scoreArr[i]);
-
-            System.out.println(name+" "+score);
-            i++;
-        }
-
-        db.getCon().close();
-        st.close();
-        resultSet.close();
-*/
 
         this.add(panel);
         this.setVisible(true);

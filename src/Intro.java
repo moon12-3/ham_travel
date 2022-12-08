@@ -42,28 +42,27 @@ public class Intro extends JFrame {
         MyPanel panel = new MyPanel();
         panel.setLayout(null);
 
+        // 버튼, 라벨 추가 및 설정
         JButton btnStart = new JButton(startIcon);
-        JButton btnRank = new JButton(rankIcon);
-        JButton btnReady = new JButton(readyIcon);
-        JLabel labelLogo = new JLabel(logoIcon);
-
-        // 버튼, 라벨 크기 & 위치 설정
-        labelLogo.setBounds(300, 50, 600, 400);
-
         btnStart.setBounds(85, 440, 250, 250);
         btnStart.setBorderPainted(false);
         btnStart.setContentAreaFilled(false);
         btnStart.setFocusPainted(false);
 
+        JButton btnRank = new JButton(rankIcon);
         btnRank.setBounds(500, 450, 220, 220);
         btnRank.setBorderPainted(false);
         btnRank.setContentAreaFilled(false);
         btnRank.setFocusPainted(false);
 
+        JButton btnReady = new JButton(readyIcon);
         btnReady.setBounds(845, 440, 250, 250);
         btnReady.setBorderPainted(false);
         btnReady.setContentAreaFilled(false);
         btnReady.setFocusPainted(false);
+
+        JLabel labelLogo = new JLabel(logoIcon);
+        labelLogo.setBounds(300, 50, 600, 400);
 
         panel.add(labelLogo);
         panel.add(btnStart);
@@ -75,7 +74,7 @@ public class Intro extends JFrame {
         this.setVisible(true);
         this.setResizable(false);
 
-        // 버튼 기능 설정
+        // 화면 전환용 리스너
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
