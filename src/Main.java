@@ -322,7 +322,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
 
-    public void EnemyProcess() {
+    public void EnemyProcess() {   // 각 몬스터의 움직임 및 충돌 감지
         for(int i = 0; i < enemyList.size(); i++) {
             en = (Enemy) enemyList.get(i);
             en.move();
@@ -337,19 +337,19 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 }
             }
         }
-        if(boss) {
+        if(boss) {   // 만약 해당 적이 보스라면
             be.move();
             move(be.shootType, be);
             if(Crash(x, y, be.x, be.y, player[0], boss_img, 2)) {   // 플레이어와 보스 충돌
-                isDamaged = true;
-                if(hpCnt == 1) {
+                isDamaged = true;   // 플레이어 데미지
+                if(hpCnt == 1) {   // 맨 처음에만 데미지를 주기(이후는 효과만 나타나게)
                     hp--;
                     bullet = new ImageIcon("src/img/bullet.png").getImage();
                     buDamage = 5;
                 }
             }
         }
-        int enemys = 80;
+        int enemys = 80;    // 적 생성 주기
         switch (control) {
             case 1 : enemys = 70;
             break;
@@ -358,13 +358,13 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             case 3 : enemys = 50;
                 break;
         }
-        if((eCnt % enemys) == 0 && !boss) {
-            enemyList.add(new Enemy(width+25, (int)(Math.random()*621)+30, (int)(Math.random()*(control+1))));
+        if((eCnt % enemys) == 0 && !boss) { // 보스 등장 전이며, 생성 주기마다
+            enemyList.add(new Enemy(width+25, (int)(Math.random()*621)+30, (int)(Math.random()*(control+1))));  // 영역 내에서 일정 시간마다 랜덤 생성
 
         }
     }
 
-    public void itemProcess() {
+    public void itemProcess() { // item 움직임 및 충돌 감지
         for(int i = 0; i < itemList.size(); i++) {
             it = (Item)itemList.get(i);
             it.move();
@@ -372,20 +372,20 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
             if(it.y > height+25) itemList.remove(i);
 
             if(Crash(x, y, it.x, it.y, item_img[0], player[0],1)) { // 플레이어와 아이템 충돌
-                if(it.type%2==0) {  // 복숭아
+                if(it.type%2==0) {  // 복숭아(힐 아이템)
                     isDamaged = true;
                     hp--;
-                    bullet = new ImageIcon("src/img/bullet.png").getImage();
-                    buDamage = 5;
+                    bullet = new ImageIcon("src/img/bullet.png").getImage();    // 총알 레벨 다운
+                    buDamage = 5;   // 총알 데미지 다운
                     itemList.remove(i);
                     gameScore -= 10;
                 }
-                else {  // 고구마
+                else {  // 고구마(데미지 아이템)
                     isHealed = true;
                     if(hp<16)
                         hp++;
-                    bullet = new ImageIcon("src/img/bullet2.png").getImage();
-                    buDamage = 10;
+                    bullet = new ImageIcon("src/img/bullet2.png").getImage();   // 총알 레벨 업
+                    buDamage = 10;  // 총알 데미지 업
                     itemList.remove(i);
                     gameScore+=10;
                 }
@@ -397,9 +397,9 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
     public void BulletProcess() {
-        if(KeySpace) {
-            if(cnt%fire_speed==0) {
-                Sound("src/bgm/bullet.wav", false);
+        if(KeySpace) { // (총알발사 키)
+            if(cnt%fire_speed==0) { // 연사 속도 조절
+                Sound("src/bgm/bullet.wav", false); // 쏠 때마다 사운드 재생
                 //gameCnt+=3;
                 bu = new Bullet(x+50, y+50, 0, 25, 0);
                 bulletList.add(bu);
@@ -415,10 +415,10 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
 
             if(Crash(x, y, bu.x, bu.y, player[0], bullet2, 1) && bu.who == 1) { // 적의 총알이 플레이어와 닿은 경우
                 isDamaged = true;
-                bulletList.remove(i);
+                bulletList.remove(i);   // 충돌한 총알 삭제
                     hp--;
-                    bullet = new ImageIcon("src/img/bullet.png").getImage();
-                    buDamage = 5;
+                    bullet = new ImageIcon("src/img/bullet.png").getImage(); // 총알 레벨 다운
+                    buDamage = 5; // 총알 데미지 다운
 
             }
             if(boss) {
@@ -463,14 +463,14 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     public boolean Crash(int x1, int y1, int x2, int y2, Image img1, Image img2, int c){
         boolean check = false;
         if ( Math.abs( ( x1 + img1.getWidth(null) / 2 )
-                - ( x2 + img2.getWidth(null) / c ))
+                - ( x2 + img2.getWidth(null) / c )) // c = 반 이상 닿았을 시 충돌 처리할 것이냐 : 1 겉만 닿아도 충돌처리할 것이냐 : 2
                 < ( img2.getWidth(null) / 2 + img1.getWidth(null) / 2 )
                 && Math.abs( ( y1 + img1.getHeight(null) / 2 )
                 - ( y2 + img2.getHeight(null) / 2 ))
-                < ( img2.getHeight(null)/2 + img1.getHeight(null)/2 ) ) //이미지 넓이, 높이값을 바로 받아 계산
-            check = true;//위 값이 true면 check에 true를 전달
+                < ( img2.getHeight(null)/2 + img1.getHeight(null)/2 ) ) //이미지 넓이와, 위치값을 받아 계산
+            check = true; //위 값이 true면 check에 true를 전달
 
-        return check;
+        return check;   // 아니면 false
     }
 
     public void ExplosionProcess() {
@@ -513,7 +513,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
         }
     }
 
-    public void Draw_Enemy() {
+    public void Draw_Enemy() { // 움직일 때 깜빡거리지 않게 해주는 추가 버퍼 
         for(int i = 0; i < enemyList.size(); ++i) {
             en = (Enemy)enemyList.get(i);
             buffg.drawImage(enemy, en.x, en.y, this);
@@ -536,7 +536,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
                 Explo_img[idx].getHeight(null) / 2, this);
     }
 
-    public void Draw_Explosion() {
+    public void Draw_Explosion() {  // 터지는 효과를 위함, ex마다의 cnt를 따라 순서대로 바뀜(몬스터 처치 시 터지는 효과)
         for(int i = 0; i < explosionList.size(); i++) {
             ex=(Explosion)explosionList.get(i);
             if(ex.damage == 0) {
@@ -627,7 +627,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e) { // 눌렀을 때
         switch(e.getKeyCode()) {
             case KeyEvent.VK_UP :
             case KeyEvent.VK_W: KeyUp = true; break;
@@ -642,7 +642,7 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e) { // 뗐을 때
         switch(e.getKeyCode()) {
             case KeyEvent.VK_UP :
             case KeyEvent.VK_W: KeyUp = false; break;
@@ -657,9 +657,9 @@ class Frame_make extends JFrame implements KeyListener, Runnable{
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {} 
 
-    public void KeyProcess(){
+    public void KeyProcess(){  // 플레이어 
         if(KeyUp == true && y>30) {
             y -= speed;
         }
